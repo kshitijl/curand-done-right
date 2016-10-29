@@ -7,6 +7,10 @@ namespace curanddr {
   template <int Arity, typename num_t = float>
   struct alignas(8) vector_t {
     num_t values[Arity];
+    __device__ num_t operator[] (size_t n) const {
+      return values[n];
+    }    
+    
   };
 
   // from moderngpu meta.hxx
@@ -19,8 +23,8 @@ namespace curanddr {
     }
   };
 
-  template<int i, int count, false>
-  struct iterate_t {
+  template<int i, int count>
+  struct iterate_t<i, count, false> {
     template<typename func_t>
     __device__ static void eval(func_t f) { }
   };
@@ -31,13 +35,13 @@ namespace curanddr {
   }
   
   template<int Arity>
-  __device__ vector_t<Arity> gaussians(uint4 counter, uint2 key) {
+  __device__ vector_t<Arity> gaussians(uint3 counter, uint2 key) {
     enum { n_blocks = (Arity + 4 - 1)/4 };
 
     float scratch[n_blocks * 4];
   
     iterate<n_blocks>([&](uint index) {
-        uint4 local_counter = counter; local_counter.w = index;
+        uint4 local_counter{counter.x, counter.y, counter.z, index};
         uint4 result = curand_Philox4x32_10(local_counter, key);
 
         float2 hi = _curand_box_muller(result.x, result.y);
@@ -60,13 +64,13 @@ namespace curanddr {
   }
 
   template<int Arity>
-  __device__ vector_t<Arity> uniforms(uint4 counter, uint2 key) {
+  __device__ vector_t<Arity> uniforms(uint3 counter, uint2 key) {
     enum { n_blocks = (Arity + 4 - 1)/4 };
 
     float scratch[n_blocks * 4];
   
     iterate<n_blocks>([&](uint index) {
-        uint4 local_counter = counter; local_counter.w = index;
+        uint4 local_counter{counter.x, counter.y, counter.z, index};
         uint4 result = curand_Philox4x32_10(local_counter, key);
 
         uint ii = index*4;
