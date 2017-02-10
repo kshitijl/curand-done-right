@@ -13,6 +13,9 @@ namespace curanddr {
     
   };
 
+  // TODO conversion of vector_t<1,T> to T
+  // TODO move to uint4, uint
+
   // from moderngpu meta.hxx
   template<int i, int count, bool valid = (i < count)>
   struct iterate_t {

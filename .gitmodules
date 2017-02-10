@@ -1,0 +1,3 @@
+[submodule "examples/moderngpu"]
+	path = examples/moderngpu
+	url = https://github.com/moderngpu/moderngpu.git
