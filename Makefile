@@ -2,7 +2,7 @@ NVCC= nvcc --expt-extended-lambda -std=c++11
 DIR=src/curand-done-right
 HEADER=$(DIR)/curanddr.hxx
 
-all: objdir bin/thrust-example bin/mgpu-example bin/basic-example
+all: objdir bin/thrust-example bin/mgpu-example bin/basic-pi-example
 
 objdir: bin
 
@@ -15,5 +15,5 @@ bin/thrust-example: examples/thrust.cu $(HEADER)
 bin/mgpu-example: examples/mgpu.cu $(HEADER)
 	$(NVCC) examples/mgpu.cu -Isrc -Iexamples/moderngpu/src -o bin/mgpu-example
 
-bin/basic-example: examples/basic.cu $(HEADER)
-	$(NVCC) examples/basic.cu -Isrc -o bin/basic-example
+bin/basic-pi-example: examples/basic-pi.cu $(HEADER)
+	$(NVCC) examples/basic-pi.cu -Isrc -o bin/basic-pi-example
