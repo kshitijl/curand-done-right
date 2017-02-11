@@ -44,7 +44,7 @@ int main() {
 
   float2 moments = mgpu::from_mem(answer)[0];
   float mean = moments.x/size;
-  float variance = moments.y/size - mean;
+  float variance = moments.y/size - mean*mean;
 
   printf("%f %f\n", mean, variance);
   
