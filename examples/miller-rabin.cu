@@ -5,7 +5,7 @@ using ulong = unsigned long;
 
 int main(int argc, char**argv) {
   uint size = 1;
-  int input_n = 46349;
+  int input_n = 17;
 
   if(argc > 1)
     sscanf(argv[1], "%d", &input_n);
@@ -23,10 +23,9 @@ int main(int argc, char**argv) {
   mgpu::mem_t<int> result(1, context);
   mgpu::transform_reduce(
     [=]__device__(uint index) {
-      auto randoms = curanddr::uniforms<1>(uint3{0,0,0},
-                                           uint2{0, index});
-      //int base_a = 2 + randoms[0]*(input_n-4);
-      int base_a = 46342;
+      auto randoms = curanddr::uniforms<1>(uint4{0,0,0,0},
+                                           index);
+      int base_a = 2 + randoms[0]*(input_n-4);
       
       uint xx = 1;
       for(int ii = 0; ii < dd; ++ii)
@@ -40,14 +39,12 @@ int main(int argc, char**argv) {
         xx = xx*xx % input_n;
 
         if(xx == 1) {
-          printf("Witness loop %d\n", base_a);
           return 1;
         }
         if(xx == input_n-1)
           return 0;
       }
 
-      printf("Witness doop %d\n", base_a);
       return 1;
     },
     size,

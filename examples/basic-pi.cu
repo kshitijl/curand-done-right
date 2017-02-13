@@ -27,8 +27,8 @@ __global__ void estimate_pi(uint* scratch, unsigned long size, uint seed) {
   if(index < size) {
     /* Generate two uniformly distributed random numbers in [0,1]: a
      * point in the square [0,1]x[0,1]. */
-    auto randoms = curanddr::uniforms<2>(uint3{0,0,0},
-                                         uint2{index, seed});
+    auto randoms = curanddr::uniforms<2>(uint4{0,0,0,seed},
+                                         index);
 
     /* Does it lie within the quarter of the unit circle that falls
      * within the rectangle we're sampling, [0,1]x[0,1]? */

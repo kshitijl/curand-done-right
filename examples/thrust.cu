@@ -27,8 +27,8 @@ int main() {
   thrust::tabulate(thrust::device,
                    samples.begin(), samples.end(),
                    []__device__(uint index) {
-                     auto random_normals = curanddr::gaussians<1>(uint3{0,0,0},
-                                                                  uint2{index, 0});
+                     auto random_normals = curanddr::gaussians<1>(uint4{0,0,0,0},
+                                                                  index);
                      return random_normals[0];                     
                    });
   auto moments = thrust::transform_reduce(samples.begin(), samples.end(),

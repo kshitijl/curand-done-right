@@ -32,8 +32,8 @@ int main() {
          Note that four of the five possible integer inputs are 0, and
          only one varies between items.
        */
-      auto randoms = curanddr::gaussians<1>(uint3{0,0,0},
-                                          uint2{index, 0});
+      auto randoms = curanddr::gaussians<1>(uint4{0,0,0,0},
+                                            index);
       /* Sum x and x**2 simultaneously */
       return float2{randoms[0], randoms[0]*randoms[0]};
     },

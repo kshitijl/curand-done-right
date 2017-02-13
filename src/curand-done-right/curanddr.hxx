@@ -14,7 +14,6 @@ namespace curanddr {
   };
 
   // TODO conversion of vector_t<1,T> to T
-  // TODO move to uint4, uint
 
   // from moderngpu meta.hxx
   template<int i, int count, bool valid = (i < count)>
@@ -38,14 +37,14 @@ namespace curanddr {
   }
   
   template<int Arity>
-  __device__ vector_t<Arity> gaussians(uint3 counter, uint2 key) {
+  __device__ vector_t<Arity> gaussians(uint4 counter, uint key) {
     enum { n_blocks = (Arity + 4 - 1)/4 };
 
     float scratch[n_blocks * 4];
   
     iterate<n_blocks>([&](uint index) {
-        uint4 local_counter{counter.x, counter.y, counter.z, index};
-        uint4 result = curand_Philox4x32_10(local_counter, key);
+        uint2 local_key{key, index};
+        uint4 result = curand_Philox4x32_10(counter, local_key);
 
         float2 hi = _curand_box_muller(result.x, result.y);
         float2 lo = _curand_box_muller(result.z, result.w);
@@ -67,14 +66,14 @@ namespace curanddr {
   }
 
   template<int Arity>
-  __device__ vector_t<Arity> uniforms(uint3 counter, uint2 key) {
+  __device__ vector_t<Arity> uniforms(uint4 counter, uint key) {
     enum { n_blocks = (Arity + 4 - 1)/4 };
 
     float scratch[n_blocks * 4];
   
     iterate<n_blocks>([&](uint index) {
-        uint4 local_counter{counter.x, counter.y, counter.z, index};
-        uint4 result = curand_Philox4x32_10(local_counter, key);
+        uint2 local_key{key, index};
+        uint4 result = curand_Philox4x32_10(counter, local_key);
 
         uint ii = index*4;
         scratch[ii]   = _curand_uniform(result.x);

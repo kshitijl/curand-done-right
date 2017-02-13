@@ -13,8 +13,8 @@ int main(int argc, char **argv) {
   mgpu::mem_t<int> answer(1, context);
   mgpu::transform_reduce(
     [=]__device__(uint index) {
-      auto randoms = curanddr::uniforms<2>(uint3{0,0,0},
-                                           uint2{index, seed});
+      auto randoms = curanddr::uniforms<2>(uint4{0,0,0,seed},
+                                           index);
       float xx = randoms[0], yy = randoms[1];
       int integrand = 0;
       if(xx*xx + yy*yy < 1)
