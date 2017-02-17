@@ -23,9 +23,9 @@ int main(int argc, char**argv) {
   mgpu::mem_t<int> result(1, context);
   mgpu::transform_reduce(
     [=]__device__(uint index) {
-      auto randoms = curanddr::uniforms<1>(uint4{0,0,0,0},
-                                           index);
-      int base_a = 2 + randoms[0]*(input_n-4);
+      uint random = curanddr::uniform_uints<1>(uint4{0,0,0,0},
+                                               index);
+      int base_a = 2 + random%(input_n-4);
       
       uint xx = 1;
       for(int ii = 0; ii < dd; ++ii)

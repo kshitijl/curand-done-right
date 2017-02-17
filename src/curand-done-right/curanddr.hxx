@@ -97,5 +97,31 @@ namespace curanddr {
       });
   
     return answer;
-  }  
+  }
+
+  template<int Arity>
+  __device__ vector_t<Arity, uint> uniform_uints(uint4 counter, uint key) {
+    enum { n_blocks = (Arity + 4 - 1)/4 };
+
+    uint scratch[n_blocks * 4];
+  
+    iterate<n_blocks>([&](uint index) {
+        uint2 local_key{key, index};
+        uint4 result = curand_Philox4x32_10(counter, local_key);
+
+        uint ii = index*4;
+        scratch[ii]   = result.x;
+        scratch[ii+1] = result.y;
+        scratch[ii+2] = result.z;
+        scratch[ii+3] = result.w;
+      });
+
+    vector_t<Arity, uint> answer;
+
+    iterate<Arity>([&](uint index) {
+        answer.values[index] = scratch[index];
+      });
+  
+    return answer;
+  }    
 }
