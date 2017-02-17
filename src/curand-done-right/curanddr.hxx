@@ -3,18 +3,26 @@
 #include <curand_kernel.h>
 #include <curand_normal.h>
 
-namespace curanddr {
+namespace curanddr {  
   template <int Arity, typename num_t = float>
   struct alignas(8) vector_t {
     num_t values[Arity];
     __device__ num_t operator[] (size_t n) const {
       return values[n];
     }    
-    
   };
 
-  // TODO conversion of vector_t<1,T> to T
-
+  template<typename num_t>
+  struct alignas(8) vector_t<1, num_t> {
+    num_t values[1];
+    __device__ num_t operator[] (size_t n) const {
+      return values[n];
+    }
+    __device__ operator num_t() const {
+      return values[0];
+    }
+  };
+  
   // from moderngpu meta.hxx
   template<int i, int count, bool valid = (i < count)>
   struct iterate_t {
